@@ -4,7 +4,7 @@
  * It provides a foundation for creating more maintainable and feature-rich tests.
  */
 
-import { test as base, type APIRequest, type Browser } from "@playwright/test";
+import { test, type APIRequest, type Browser } from "@playwright/test";
 import type { ErrorListenerOptions } from "../types/frameworkTypes.js";
 import tabDataHelper from "../data/tabDataHelper.js";
 import testDataHelper from "../data/testDataHelper.js";
@@ -15,7 +15,7 @@ import stepSequenceHelper from "../chaining/stepSequenceHelper.js";
 /**
  * Extended test fixture that enhances Playwright's base test fixture with additional capabilities
  */
-const baseFixture = base.extend<
+const baseFixture = test.extend<
   {
     /**
      * Configuration options for error listener behavior.

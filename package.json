@@ -1,6 +1,6 @@
 {
   "name": "playwrap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Playwright wrapper",
   "type": "module",
   "main": "./dist/index.js",

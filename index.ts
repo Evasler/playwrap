@@ -23,10 +23,11 @@ const {
   openNewThrowAwayContext,
   switchWorkingContext,
 } = requestHelper;
-const { baseUrl } = frameworkDataHelper;
+const { baseUrl, browser } = frameworkDataHelper;
 const { pushTestData, getTestData } = testDataHelper;
 export {
   baseUrl,
+  browser,
   stepSequence,
   addStep,
   workingTab,
