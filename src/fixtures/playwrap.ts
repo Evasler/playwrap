@@ -6,16 +6,16 @@
 
 import { test, type APIRequest, type Browser } from "@playwright/test";
 import type { ErrorListenerOptions } from "../types/frameworkTypes.js";
-import tabDataHelper from "../data/tabDataHelper.js";
-import testDataHelper from "../data/testDataHelper.js";
-import frameworkDataHelper from "../data/frameworkDataHelper.js";
-import browserHelper from "../channel/browserHelper.js";
-import stepSequenceHelper from "../chaining/stepSequenceHelper.js";
+import { tabDataHelper } from "../data/tabDataHelper.js";
+import { testDataHelper } from "../data/testDataHelper.js";
+import { frameworkDataHelper } from "../data/frameworkDataHelper.js";
+import { browserHelper } from "../channel/browserHelper.js";
+import { stepSequenceHelper } from "../chaining/stepSequenceHelper.js";
 
 /**
  * Extended test fixture that enhances Playwright's base test fixture with additional capabilities
  */
-const baseFixture = test.extend<
+export const baseFixture = test.extend<
   {
     /**
      * Configuration options for error listener behavior.
@@ -54,8 +54,6 @@ const baseFixture = test.extend<
     { auto: true },
   ],
 });
-
-export default baseFixture;
 
 /**
  * Initializes test data and framework data for a test run

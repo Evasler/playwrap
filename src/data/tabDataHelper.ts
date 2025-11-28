@@ -14,6 +14,73 @@ function contextPageTypes(contextIndex: number) {
     throw new Error(`No page types found for context index ${contextIndex}`);
   return contextPageTypes;
 }
+/**
+ * Retrieves the page type of a specific tab
+ *
+ * @param contextIndex - The index of the browser context
+ * @param tabIndex - The index of the tab within the context
+ * @returns The page type loaded in the specified tab
+ */
+function pageType(contextIndex: number, tabIndex: number) {
+  return contextPageTypes(contextIndex)[tabIndex];
+}
+
+/**
+ * Initializes the array of page types for a new browser context
+ *
+ * This method is called when a new browser context is created to prepare
+ * for tracking page types within that context.
+ */
+function initializeContextPageTypes() {
+  pageTypes.push(new Array<string>());
+}
+
+/**
+ * Sets the initial default page type for a newly created tab
+ *
+ * @param contextIndex - The index of the browser context
+ * @param tabIndex - The index of the tab within the context
+ */
+function initializePageType(contextIndex: number, tabIndex: number) {
+  contextPageTypes(contextIndex)[tabIndex] = "Blank";
+}
+
+/**
+ * Removes page type tracking for an entire browser context
+ *
+ * This method is called when a browser context is closed to clean up
+ * the tracking data for that context.
+ *
+ * @param contextIndex - The index of the browser context to remove
+ */
+function removeContextPageTypes(contextIndex: number) {
+  pageTypes.splice(contextIndex, 1);
+}
+
+/**
+ * Updates the page type of a specific tab
+ *
+ * @param contextIndex - The index of the browser context
+ * @param tabIndex - The index of the tab within the context
+ * @param pageType - The new page type to set for the tab
+ */
+function updatePageType(
+  contextIndex: number,
+  tabIndex: number,
+  pageType: string
+) {
+  contextPageTypes(contextIndex)[tabIndex] = pageType;
+}
+
+/**
+ * Resets all page type tracking data
+ *
+ * This method clears all page type tracking information across all contexts and tabs.
+ * It's typically called at the start of a test to ensure a clean state.
+ */
+function resetPageTypes() {
+  pageTypes.length = 0;
+}
 
 /**
  * Helper module for managing page type tracking across browser tabs.
@@ -24,70 +91,11 @@ function contextPageTypes(contextIndex: number) {
  * multiple browser contexts and tabs, enhancing error messages when tabs contain
  * unexpected content.
  */
-const tabDataHelper = {
-  /**
-   * Retrieves the page type of a specific tab
-   *
-   * @param contextIndex - The index of the browser context
-   * @param tabIndex - The index of the tab within the context
-   * @returns The page type loaded in the specified tab
-   */
-  pageType(contextIndex: number, tabIndex: number) {
-    return contextPageTypes(contextIndex)[tabIndex];
-  },
-
-  /**
-   * Initializes the array of page types for a new browser context
-   *
-   * This method is called when a new browser context is created to prepare
-   * for tracking page types within that context.
-   */
-  initializeContextPageTypes() {
-    pageTypes.push(new Array<string>());
-  },
-
-  /**
-   * Sets the initial default page type for a newly created tab
-   *
-   * @param contextIndex - The index of the browser context
-   * @param tabIndex - The index of the tab within the context
-   */
-  initializePageType(contextIndex: number, tabIndex: number) {
-    this.updatePageType(contextIndex, tabIndex, "Blank");
-  },
-
-  /**
-   * Removes page type tracking for an entire browser context
-   *
-   * This method is called when a browser context is closed to clean up
-   * the tracking data for that context.
-   *
-   * @param contextIndex - The index of the browser context to remove
-   */
-  removeContextPageTypes(contextIndex: number) {
-    pageTypes.splice(contextIndex, 1);
-  },
-
-  /**
-   * Updates the page type of a specific tab
-   *
-   * @param contextIndex - The index of the browser context
-   * @param tabIndex - The index of the tab within the context
-   * @param pageType - The new page type to set for the tab
-   */
-  updatePageType(contextIndex: number, tabIndex: number, pageType: string) {
-    contextPageTypes(contextIndex)[tabIndex] = pageType;
-  },
-
-  /**
-   * Resets all page type tracking data
-   *
-   * This method clears all page type tracking information across all contexts and tabs.
-   * It's typically called at the start of a test to ensure a clean state.
-   */
-  resetPageTypes() {
-    pageTypes.length = 0;
-  },
-};
-
-export default tabDataHelper;
+export const tabDataHelper = {
+  pageType,
+  initializeContextPageTypes,
+  initializePageType,
+  removeContextPageTypes,
+  updatePageType,
+  resetPageTypes,
+} as const;

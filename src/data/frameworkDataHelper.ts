@@ -19,6 +19,53 @@ let browser: Browser;
 let errorListenerOptions: ErrorListenerOptions;
 
 /**
+ * @param contextIndex The index of the browser context
+ * @returns The browser context at the specified index
+ * @throws Error if the context does not exist
+ */
+function getContext(contextIndex: number) {
+  const context = browser.contexts()[contextIndex];
+  if (!context) throw new Error(`Context [${contextIndex}] does not exist`);
+  return context;
+}
+
+/**
+ * Initializes the framework data with required objects and configuration
+ *
+ * @param frameworkData - Object containing the required framework data
+ * @param frameworkData.apiRequest - Playwright's API request context
+ * @param frameworkData.baseUrl - Base URL of the application under test
+ * @param frameworkData.browser - Playwright's Browser instance
+ * @param frameworkData.errorListenerOptions - Error listener configuration
+ */
+function init(frameworkData: {
+  apiRequest: APIRequest;
+  baseUrl: string;
+  browser: Browser;
+  errorListenerOptions: ErrorListenerOptions;
+}) {
+  apiRequest = frameworkData.apiRequest;
+  baseUrl = frameworkData.baseUrl;
+  browser = frameworkData.browser;
+  errorListenerOptions = frameworkData.errorListenerOptions;
+}
+
+/**
+ * @param contextIndex The index of the browser context
+ * @param pageIndex The index of the page within the context
+ * @returns The page at the specified index within the context
+ * @throws Error if the page does not exist
+ */
+function getPage(contextIndex: number, pageIndex: number) {
+  const page = getContext(contextIndex).pages()[pageIndex];
+  if (!page)
+    throw new Error(
+      `Page [${pageIndex}] does not exist for Context [${contextIndex}]`
+    );
+  return page;
+}
+
+/**
  * Helper module that serves as a centralized store for framework-level data.
  *
  * This module provides access to core Playwright objects and configuration settings
@@ -26,81 +73,20 @@ let errorListenerOptions: ErrorListenerOptions;
  * a method-chaining pattern by providing consistent access to these objects
  * throughout the test execution lifecycle.
  */
-const frameworkDataHelper = {
-  /**
-   * @returns The Playwright API request context for making API calls
-   */
-  get apiRequest() {
+export const frameworkDataHelper = {
+  apiRequest() {
     return apiRequest;
   },
-
-  /**
-   * @returns The base URL of the application under test
-   */
-  get baseUrl() {
+  baseUrl() {
     return baseUrl;
   },
-
-  /**
-   * @returns The Playwright Browser instance for UI testing
-   */
-  get browser() {
+  browser() {
     return browser;
   },
-
-  /**
-   * @returns The error listener configuration options
-   */
-  get errorListenerOptions() {
+  errorListenerOptions() {
     return errorListenerOptions;
   },
-
-  /**
-   * Initializes the framework data with required objects and configuration
-   *
-   * @param frameworkData - Object containing the required framework data
-   * @param frameworkData.apiRequest - Playwright's API request context
-   * @param frameworkData.baseUrl - Base URL of the application under test
-   * @param frameworkData.browser - Playwright's Browser instance
-   * @param frameworkData.errorListenerOptions - Error listener configuration
-   */
-  init(frameworkData: {
-    apiRequest: APIRequest;
-    baseUrl: string;
-    browser: Browser;
-    errorListenerOptions: ErrorListenerOptions;
-  }) {
-    apiRequest = frameworkData.apiRequest;
-    baseUrl = frameworkData.baseUrl;
-    browser = frameworkData.browser;
-    errorListenerOptions = frameworkData.errorListenerOptions;
-  },
-
-  /**
-   * @param contextIndex The index of the browser context
-   * @returns The browser context at the specified index
-   * @throws Error if the context does not exist
-   */
-  getContext(contextIndex: number) {
-    const context = browser.contexts()[contextIndex];
-    if (!context) throw new Error(`Context [${contextIndex}] does not exist`);
-    return context;
-  },
-
-  /**
-   * @param contextIndex The index of the browser context
-   * @param pageIndex The index of the page within the context
-   * @returns The page at the specified index within the context
-   * @throws Error if the page does not exist
-   */
-  getPage(contextIndex: number, pageIndex: number) {
-    const page = this.getContext(contextIndex).pages()[pageIndex];
-    if (!page)
-      throw new Error(
-        `Page [${pageIndex}] does not exist for Context [${contextIndex}]`
-      );
-    return page;
-  },
-};
-
-export default frameworkDataHelper;
+  init,
+  getContext,
+  getPage,
+} as const;
